@@ -1,0 +1,1 @@
+CreateObject("Wscript.Shell").Run "run_gui.bat",0,True

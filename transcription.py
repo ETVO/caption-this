@@ -1,15 +1,16 @@
+### Developed by ETVO ### 
+
 import os
 import tempfile
 import ffmpeg
-import whisper
+import whisper # https://pypi.org/project/openai-whisper/s
 from time import time
 from math import floor
 from utils import format_timestamp
 from typing import Iterator
 
 model = None
-MODEL_NAME = "large-v3"
-
+MODEL_NAME = "large-v3" # best for multi-lingual tasks
 
 def load_whisper():
     global model
@@ -33,15 +34,20 @@ def extract_audio_file(video_filepath, video_name):
     return audio_output_path
 
 
-def transcribe_audio(audio_filepath):
-    time_start = time()
+def transcribe_audio(audio_filepath, task='transcribe'):
+    time_start = time() # Start counting
     if not model:
-        load_whisper()
+        load_whisper()    
 
-    print("Transcribing extracted audio...")
-    result = model.transcribe(audio_filepath, fp16=False)
+    # Get printable name for task 
+    task_desc = 'Transcribing' if task == 'transcribe' else 'Translating' 
+    print(f"{task_desc} extracted audio...")
+    
+    # Call model transcribe
+    result = model.transcribe(audio_filepath, fp16=False, task=task)
+    
     time_elapsed = time() - time_start
-    print(f"Transcription took {floor(time_elapsed)}s. Finished transcribing.")
+    print(f"Finished {task_desc.lower()} in {floor(time_elapsed)}s.")
     return result
 
 

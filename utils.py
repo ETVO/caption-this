@@ -1,14 +1,38 @@
 import os
 from typing import Iterator, TextIO
+import sys
 
 
-# Get filename without extension
+def get_ico_file():
+    datafile = "icon.ico"
+    if not hasattr(sys, "frozen"):
+        datafile = os.path.join(os.path.dirname(__file__), datafile)
+    else:
+        datafile = os.path.join(sys.prefix, datafile)
+
+    return resource_path(datafile)
+
+
+def resource_path(relative_path):
+    try:
+        base_path = sys._MEIPASS
+    except Exception:
+        base_path = os.path.abspath(".")
+
+    return os.path.join(base_path, relative_path)
+
+
 def filename(path):
+    """Get filename without extension"""
     return os.path.splitext(os.path.basename(path))[0]
 
 
-# Format timestamp in h:m:s,ms
+def dirname(path):
+    os.path.dirname(path)
+
+
 def format_timestamp(seconds: float, always_include_hours: bool = False):
+    """Format timestamp in h:m:s,ms"""
     assert seconds >= 0, "non-negative timestamp expected"
     milliseconds = round(seconds * 1000.0)
 
@@ -25,8 +49,8 @@ def format_timestamp(seconds: float, always_include_hours: bool = False):
     return f"{hours_marker}{minutes:02d}:{seconds:02d},{milliseconds:03d}"
 
 
-# Write transcript to SRT file in correct format
 def write_srt(transcript: Iterator[dict], file: TextIO):
+    """Write transcript to SRT file in correct format"""
     for i, segment in enumerate(transcript, start=1):
         print(
             f"{i}\n"
